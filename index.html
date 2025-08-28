@@ -266,5 +266,48 @@
     // Start at home
     navigate('about:home', true);
   </script>
+  <!-- Add this container above the iframe -->
+<div id="suggestions" style="background:#111827; padding:10px; border-bottom:1px solid #1f2937;"></div>
+
+<script>
+const suggestionsEl = document.getElementById('suggestions');
+
+async function fetchSuggestions(query) {
+  if (!query) {
+    suggestionsEl.innerHTML = '';
+    return;
+  }
+  try {
+    const url = `https://api.duckduckgo.com/?q=${encodeURIComponent(query)}&format=json&pretty=1`;
+    const res = await fetch(url);
+    const data = await res.json();
+    
+    // Extract related topics and links
+    const links = [];
+    (data.RelatedTopics || []).forEach(item => {
+      if (item.FirstURL && item.Text) {
+        links.push({ url: item.FirstURL, title: item.Text });
+      } else if (item.Topics) {
+        item.Topics.forEach(sub => {
+          if (sub.FirstURL && sub.Text) {
+            links.push({ url: sub.FirstURL, title: sub.Text });
+          }
+        });
+      }
+    });
+    
+    suggestionsEl.innerHTML = links.slice(0,5).map(link => 
+      `<a href="#" style="margin-right:12px; color:#60a5fa;" onclick="navigate('${link.url}'); return false;">${link.title}</a>`
+    ).join('');
+  } catch(e) {
+    console.error(e);
+    suggestionsEl.innerHTML = '<small style="color:#9aa3b2;">No suggestions available</small>';
+  }
+}
+
+// Call when user types
+input.addEventListener('input', () => fetchSuggestions(input.value));
+</script>
+
 </body>
 </html>
