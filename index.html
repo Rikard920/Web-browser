@@ -1,8 +1,27 @@
-<input id="url" placeholder="Enter URL">
-<button onclick="go()">Go</button>
-<iframe id="view" style="width:100%;height:90vh;"></iframe>
+<input id="search" placeholder="Type to search...">
+<ul id="results"></ul>
+<iframe id="view" style="width:100%;height:80vh;"></iframe>
+
 <script>
-function go(){
-  document.getElementById('view').src = document.getElementById('url').value;
-}
+const sites = [
+  { name: "PenguinMod", url: "https://penguinmod.com" },
+  { name: "Scratch", url: "https://scratch.mit.edu" },
+  { name: "GitHub", url: "https://github.com" },
+  { name: "Wikipedia", url: "https://wikipedia.org" }
+];
+
+document.getElementById('search').addEventListener('input', function() {
+  const query = this.value.toLowerCase();
+  const matches = sites.filter(s => s.name.toLowerCase().includes(query));
+  const list = document.getElementById('results');
+  list.innerHTML = '';
+  matches.forEach(site => {
+    const li = document.createElement('li');
+    li.textContent = site.name;
+    li.style.cursor = 'pointer';
+    li.onclick = () => document.getElementById('view').src = site.url;
+    list.appendChild(li);
+  });
+});
 </script>
+
