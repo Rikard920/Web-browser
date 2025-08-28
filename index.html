@@ -308,6 +308,37 @@ async function fetchSuggestions(query) {
 // Call when user types
 input.addEventListener('input', () => fetchSuggestions(input.value));
 </script>
+  <div id="loader" style="
+  display:none;
+  position:absolute;
+  inset:0;
+  background:rgba(0,0,0,0.5);
+  color:white;
+  font-size:18px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:5;
+">
+  Loading...
+</div>
+
+<iframe id="view"></iframe>
+
+<script>
+const loader = document.getElementById('loader');
+const frame = document.getElementById('view');
+
+function loadInFrame(url) {
+  loader.style.display = 'flex'; // show
+  frame.src = url;
+}
+
+frame.onload = () => {
+  loader.style.display = 'none'; // hide when loaded
+};
+</script>
+
 
 </body>
 </html>
